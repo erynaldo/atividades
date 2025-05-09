@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trabalhando a coordenação motora</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f8ff;
+      font-family: Arial, sans-serif;
+    }
+
+    canvas {
+      border: 2px solid #000;
+      background-color: #242323;
+      /* background-color: #1bd753; */
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    #score {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Treinando o clique do mouse</h3>
+  <canvas id="gameCanvas" width="800" height="500"></canvas>
+  <div id="score">Acertos: 0</div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const scoreDisplay = document.getElementById("score");
+
+    const ellipseRadius = 9;
+    let hits = 0;
+    let circleX, circleY;
+
+    function drawCircle(x, y) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.arc(x, y, ellipseRadius, 0, 2 * Math.PI);
+      ctx.fillStyle = "#1bd753";
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    function placeRandomCircle() {
+      circleX = Math.random() * (canvas.width - 2 * ellipseRadius) + ellipseRadius;
+      circleY = Math.random() * (canvas.height - 2 * ellipseRadius) + ellipseRadius;
+      drawCircle(circleX, circleY);
+    }
+
+    function isClickInsideCircle(x, y) {
+      const dx = x - circleX;
+      const dy = y - circleY;
+      return dx * dx + dy * dy <= ellipseRadius * ellipseRadius;
+    }
+
+    canvas.addEventListener("click", function (e) {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      if (isClickInsideCircle(clickX, clickY)) {
+        hits++;
+        scoreDisplay.textContent = `Acertos: ${hits}`;
+        if (hits >= 20) {
+          alert("Parabéns! Você completou o jogo com 20 acertos!");
+          hits = 0;
+        }
+        placeRandomCircle();
+      }
+    });
+
+    // Iniciar jogo
+    placeRandomCircle();
+  </script>
+</body>
+</html>
